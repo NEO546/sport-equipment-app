@@ -3,148 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - ระบบยืม-คืนอุปกรณ์กีฬา</title>
+    <title>Modern Dashboard - Sports Borrow System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(31, 41, 55, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+        }
+    </style>
 </head>
-<body class="bg-gray-900 text-white font-sans antialiased p-6">
+<body class="bg-[#0f172a] text-slate-200 min-h-screen">
 
-    <div class="max-w-6xl mx-auto">
-        <div class="flex justify-between items-center bg-gray-800 p-6 rounded-lg shadow-lg mb-6 border border-gray-700">
-            <div>
-                <h1 class="text-3xl font-bold text-blue-400">🏀 Sport Equipment Dashboard</h1>
-                <p class="text-gray-400 mt-1">จัดการระบบยืม-คืนอุปกรณ์กีฬา</p>
+    <nav class="glass-card sticky top-0 z-50 px-6 py-4 mb-8 border-b border-slate-700">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-500/20">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-white">SportSync <span class="text-blue-500 text-sm font-normal">Pro</span></span>
             </div>
-            <button onclick="window.location.href='index.php'" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition">
-                ออกจากระบบ
-            </button>
+            <div class="flex items-center space-x-6">
+                <span class="text-slate-400 text-sm hidden md:block">ผู้ดูแลระบบ: <span class="text-slate-200 font-semibold">Admin</span></span>
+                <button onclick="window.location.href='index.php'" class="bg-slate-700 hover:bg-red-500/20 hover:text-red-400 px-4 py-2 rounded-lg text-sm font-medium transition-all border border-slate-600">ออกจากระบบ</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 pb-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="glass-card p-6 rounded-2xl">
+                <p class="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">อุปกรณ์ทั้งหมด</p>
+                <h3 id="totalCount" class="text-3xl font-bold">--</h3>
+            </div>
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-green-500">
+                <p class="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">สถานะปกติ</p>
+                <h3 class="text-3xl font-bold text-green-400">พร้อมใช้งาน</h3>
+            </div>
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-blue-500">
+                <p class="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">การทำรายการวันนี้</p>
+                <h3 class="text-3xl font-bold text-blue-400">Active</h3>
+            </div>
         </div>
 
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-semibold">รายการอุปกรณ์ทั้งหมด</h2>
-            <button onclick="openForm('add')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow transition">
-                + เพิ่มอุปกรณ์ใหม่
-            </button>
+        <div class="glass-card rounded-2xl overflow-hidden shadow-2xl">
+            <div class="p-6 border-b border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
+                <h2 class="text-xl font-bold">คลังอุปกรณ์กีฬา</h2>
+                <button onclick="openForm('add')" class="w-full md:w-auto bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl font-semibold shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    เพิ่มอุปกรณ์
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-slate-800/50 text-slate-400 text-sm uppercase">
+                            <th class="px-6 py-4 font-semibold">ID</th>
+                            <th class="px-6 py-4 font-semibold text-left">รายละเอียดอุปกรณ์</th>
+                            <th class="px-6 py-4 font-semibold">หมวดหมู่</th>
+                            <th class="px-6 py-4 font-semibold">จำนวน</th>
+                            <th class="px-6 py-4 font-semibold text-right">ดำเนินการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="equipmentTableBody" class="divide-y divide-slate-700">
+                        </tbody>
+                </table>
+            </div>
         </div>
-
-        <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden border border-gray-700">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-gray-700 text-gray-300">
-                        <th class="p-4 border-b border-gray-600">ID</th>
-                        <th class="p-4 border-b border-gray-600">ชื่ออุปกรณ์</th>
-                        <th class="p-4 border-b border-gray-600">หมวดหมู่</th>
-                        <th class="p-4 border-b border-gray-600">จำนวนทั้งหมด</th>
-                        <th class="p-4 border-b border-gray-600 text-center">จัดการ</th>
-                    </tr>
-                </thead>
-                <tbody id="equipmentTableBody">
-                    <tr><td colspan="5" class="p-4 text-center text-gray-400">กำลังโหลดข้อมูล...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    </main>
 
     <script>
-        $(document).ready(function() {
-            loadData(); // โหลดข้อมูลทันทีที่เปิดหน้าเว็บ
-        });
+        $(document).ready(function() { loadData(); });
 
-        // ฟังก์ชันดึงข้อมูลจาก API มาแสดงในตาราง (AJAX)
         function loadData() {
             $.get('api/get_equipment.php', function(response) {
                 let html = '';
                 if(response.status === 'success') {
-                    if(response.data.length === 0) {
-                        html = '<tr><td colspan="5" class="p-4 text-center text-gray-400">ยังไม่มีข้อมูลอุปกรณ์</td></tr>';
-                    } else {
-                        response.data.forEach(function(item) {
-                            html += `<tr class="hover:bg-gray-700 transition">
-                                <td class="p-4 border-b border-gray-700">${item.id}</td>
-                                <td class="p-4 border-b border-gray-700 font-semibold text-blue-300">${item.name}</td>
-                                <td class="p-4 border-b border-gray-700">
-                                    <span class="bg-gray-600 px-2 py-1 rounded text-sm">${item.category}</span>
-                                </td>
-                                <td class="p-4 border-b border-gray-700">${item.total_quantity}</td>
-                                <td class="p-4 border-b border-gray-700 text-center space-x-2">
-                                    <button onclick="openForm('edit', ${item.id}, '${item.name}', '${item.category}', ${item.total_quantity})" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-1 px-3 rounded text-sm">แก้ไข</button>
-                                    <button onclick="deleteEquipment(${item.id})" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-sm">ลบ</button>
-                                </td>
-                            </tr>`;
-                        });
-                    }
+                    $('#totalCount').text(response.data.length);
+                    response.data.forEach(function(item) {
+                        html += `
+                        <tr class="hover:bg-slate-700/30 transition-colors">
+                            <td class="px-6 py-4 text-center text-slate-500 font-mono text-xs">#${item.id}</td>
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-slate-100">${item.name}</div>
+                                <div class="text-xs text-slate-500 italic">อัปเดตล่าสุด: ${new Date(item.updated_at).toLocaleDateString()}</div>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-xs font-bold border border-blue-500/20">${item.category}</span>
+                            </td>
+                            <td class="px-6 py-4 text-center font-bold text-slate-300">${item.total_quantity}</td>
+                            <td class="px-6 py-4 text-right space-x-2">
+                                <button onclick="openForm('edit', ${item.id}, '${item.name}', '${item.category}', ${item.total_quantity})" class="text-amber-400 hover:bg-amber-400/10 p-2 rounded-lg transition-all">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                </button>
+                                <button onclick="deleteEquipment(${item.id})" class="text-red-400 hover:bg-red-400/10 p-2 rounded-lg transition-all">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </td>
+                        </tr>`;
+                    });
                 }
                 $('#equipmentTableBody').html(html);
             });
         }
 
-        // ฟังก์ชันเปิด Popup ฟอร์ม (เพิ่ม/แก้ไข) ด้วย jQuery Confirm
         function openForm(action, id = '', name = '', category = '', total = '') {
-            let titleText = action === 'add' ? '➕ เพิ่มอุปกรณ์ใหม่' : '✏️ แก้ไขอุปกรณ์';
-            
             $.confirm({
-                title: `<span class="text-gray-800 font-bold">${titleText}</span>`,
+                title: `<span class="text-slate-800 font-bold">${action === 'add' ? '✨ เพิ่มอุปกรณ์ใหม่' : '📝 แก้ไขรายละเอียด'}</span>`,
                 content: `
-                    <form action="" class="formName space-y-4 mt-2">
-                        <div><label class="text-gray-700 font-semibold block mb-1">ชื่ออุปกรณ์</label><input type="text" id="eq_name" class="w-full border border-gray-300 p-2 rounded text-gray-800 focus:outline-none focus:border-blue-500" value="${name}" required /></div>
-                        <div><label class="text-gray-700 font-semibold block mb-1">หมวดหมู่</label><input type="text" id="eq_category" class="w-full border border-gray-300 p-2 rounded text-gray-800 focus:outline-none focus:border-blue-500" value="${category}" required /></div>
-                        <div><label class="text-gray-700 font-semibold block mb-1">จำนวน</label><input type="number" id="eq_total" class="w-full border border-gray-300 p-2 rounded text-gray-800 focus:outline-none focus:border-blue-500" value="${total}" required /></div>
-                    </form>
-                `,
-                type: 'blue',
-                columnClass: 'medium',
+                    <div class="mt-4 space-y-4">
+                        <input type="text" id="eq_name" class="w-full border p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="ชื่ออุปกรณ์ (เช่น ไม้แบดมินตัน)" value="${name}" />
+                        <input type="text" id="eq_category" class="w-full border p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="หมวดหมู่" value="${category}" />
+                        <input type="number" id="eq_total" class="w-full border p-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="จำนวนคงคลัง" value="${total}" />
+                    </div>`,
                 buttons: {
-                    formSubmit: {
-                        text: 'บันทึกข้อมูล',
+                    confirm: {
+                        text: 'ยืนยัน',
                         btnClass: 'btn-blue',
                         action: function () {
                             let n = this.$content.find('#eq_name').val();
                             let c = this.$content.find('#eq_category').val();
                             let t = this.$content.find('#eq_total').val();
-                            
-                            if(!n || !c || !t){
-                                $.alert({title: 'แจ้งเตือน!', content: 'กรุณากรอกข้อมูลให้ครบถ้วน', type: 'red'});
-                                return false;
-                            }
-                            
-                            // ส่งข้อมูลไปบันทึกด้วย AJAX
-                            $.post('api/manage_equipment.php', {
-                                action: action, id: id, name: n, category: c, total_quantity: t
-                            }, function(res) {
-                                if(res.status === 'success') {
-                                    $.alert({title: 'สำเร็จ!', content: res.message, type: 'green'});
-                                    loadData(); // รีเฟรชตารางใหม่
-                                } else {
-                                    $.alert({title: 'ผิดพลาด!', content: res.message, type: 'red'});
-                                }
-                            });
+                            if(!n || !c || !t) return false;
+                            $.post('api/manage_equipment.php', {action: action, id: id, name: n, category: c, total_quantity: t}, function() { loadData(); });
                         }
                     },
-                    cancel: { text: 'ยกเลิก', btnClass: 'btn-default' }
+                    cancel: { text: 'ยกเลิก' }
                 }
             });
         }
 
-        // ฟังก์ชันลบข้อมูล
         function deleteEquipment(id) {
             $.confirm({
-                title: 'ยืนยันการลบ!',
-                content: 'คุณแน่ใจหรือไม่ว่าต้องการลบอุปกรณ์นี้?',
+                title: 'ยืนยันการลบ?',
+                content: 'ข้อมูลนี้จะหายไปจากระบบทันที',
                 type: 'red',
                 buttons: {
-                    confirm: {
-                        text: 'ลบทิ้ง',
-                        btnClass: 'btn-red',
-                        action: function () {
-                            $.post('api/manage_equipment.php', { action: 'delete', id: id }, function(res) {
-                                if(res.status === 'success') {
-                                    loadData(); // รีเฟรชตาราง
-                                }
-                            });
-                        }
-                    },
+                    confirm: { text: 'ลบเลย', btnClass: 'btn-red', action: function() {
+                        $.post('api/manage_equipment.php', {action: 'delete', id: id}, function() { loadData(); });
+                    }},
                     cancel: { text: 'ยกเลิก' }
                 }
             });
