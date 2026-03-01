@@ -36,37 +36,56 @@
         </form>
     </div>
 
-    <script>
-        // ใช้ jQuery จัดการเมื่อกดปุ่ม Submit ฟอร์ม
-        $(document).ready(function() {
-            $('#loginForm').submit(function(e) {
-                e.preventDefault(); // ป้องกันไม่ให้เว็บรีเฟรชหน้า (สำคัญมากสำหรับ AJAX)
-                
-                let username = $('#username').val();
-                let password = $('#password').val();
+   <script>
+    $(document).ready(function() {
+        $('#loginForm').submit(function(e) {
+            e.preventDefault(); // ป้องกันเว็บรีเฟรช
+            
+            let username = $('#username').val();
+            let password = $('#password').val();
 
-                // เรียกใช้ jQuery Confirm เพื่อแสดง Popup สวยๆ
-                $.confirm({
-                    title: 'กำลังตรวจสอบข้อมูล!',
-                    content: 'ระบบกำลังส่งข้อมูลผ่าน AJAX...',
-                    theme: 'modern',
-                    type: 'blue',
-                    buttons: {
-                        ok: {
-                            text: 'จำลองการเข้าสู่ระบบสำเร็จ',
-                            btnClass: 'btn-blue',
-                            action: function () {
-                                $.alert({
-                                    title: 'สำเร็จ!',
-                                    content: 'ยินดีต้อนรับ ' + username + ' เข้าสู่ระบบ',
-                                    type: 'green'
-                                });
+            // ส่งข้อมูลไปที่ auth.php ผ่าน AJAX
+            $.ajax({
+                url: 'api/auth.php',
+                type: 'POST',
+                data: { username: username, password: password },
+                dataType: 'json',
+                success: function(response) {
+                    if(response.status === 'success') {
+                        // ถ้าล็อกอินผ่าน ให้โชว์ Popup สีเขียว แล้วเด้งไปหน้า Dashboard
+                        $.alert({
+                            title: 'สำเร็จ!',
+                            content: response.message,
+                            type: 'green',
+                            buttons: {
+                                ok: {
+                                    text: 'เข้าสู่หน้าหลัก',
+                                    btnClass: 'btn-green',
+                                    action: function() {
+                                        window.location.href = 'dashboard.php';
+                                    }
+                                }
                             }
-                        }
+                        });
+                    } else {
+                        // ถ้ารหัสผิด ให้โชว์ Popup สีแดง
+                        $.alert({
+                            title: 'ผิดพลาด!',
+                            content: response.message,
+                            type: 'red'
+                        });
                     }
-                });
+                },
+                error: function() {
+                    $.alert({
+                        title: 'ระบบขัดข้อง!',
+                        content: 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้',
+                        type: 'red'
+                    });
+                }
             });
         });
-    </script>
+    });
+</script>
 </body>
 </html>
